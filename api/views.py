@@ -16,7 +16,7 @@ import urllib.parse
 from .utils import create_or_update_user
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
-from .models import User  # Adjust User model import as per your actual model
+from django.contrib.auth.models import User 
 
 logger = logging.getLogger(__name__)
 
