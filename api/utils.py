@@ -13,7 +13,6 @@ def create_or_update_user(user_info):
 
     user, created = User.objects.update_or_create(
         email=email,
-        
         defaults={
             'first_name': first_name,
             'last_name': last_name,

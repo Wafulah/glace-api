@@ -141,7 +141,7 @@ def get_user_by_email(request):
             user = User.objects.get(email=email)
             user_data = {
                 "id": str(user.id),
-                "name": user.username,
+                "name": user.first_name,
                 "email": user.email,
             }
             return JsonResponse(user_data)
@@ -164,7 +164,7 @@ def get_user_by_id(request):
             user = User.objects.get(username=user_id)
             user_data = {
                 "id": str(user.id),
-                "name": user.username,
+                "name": user.first_name,
                 "email": user.email,
             }
             return JsonResponse(user_data)
