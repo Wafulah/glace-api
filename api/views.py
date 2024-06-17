@@ -40,7 +40,6 @@ class InitiateGoogleLoginView(APIView):
             return JsonResponse({'error': 'OIDC Client not found'}, status=400)
 
 
-@method_decorator(protected_resource_view(scopes=['openid', 'email', 'profile']), name='dispatch')
 class GoogleCallbackView(View):
     @csrf_exempt  # Disable CSRF for this view
     def get(self, request, *args, **kwargs):
