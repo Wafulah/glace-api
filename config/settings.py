@@ -17,7 +17,7 @@ SECRET_KEY = getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['glace-api-vhkd.onrender.com']
 
 
 # Application definition
@@ -83,7 +83,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-CORS_ORIGIN_WHITELIST = ['http://localhost:3000','http://127.0.0.1:3000']
+CORS_ORIGIN_WHITELIST = ['http://localhost:3000','https://glace-store.vercel.app']
 
 
 
@@ -149,7 +149,7 @@ OIDC_PROVIDERS = {
         'issuer': 'https://accounts.google.com',
         'client_id': OIDC_CLIENT_ID,
         'client_secret': OIDC_CLIENT_SECRET,
-        'redirect_uris': ['http://localhost:8000/openid/callback'],
+        'redirect_uris': ['https://glace-api-vhkd.onrender.com/openid/callback'],
         'scopes': ['openid', 'email', 'profile'],
     }
 }
