@@ -132,7 +132,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SITE_ID = 1
 
 # Custom settings
-LOGIN_REDIRECT_URL = 'http://localhost:3000/'
+LOGIN_REDIRECT_URL = 'https://glace-store.vercel.app'
 # LOGIN_URL will be set in urls.py
 
 # OIDC Provider settings
@@ -148,7 +148,7 @@ OIDC_PROVIDERS = {
         'issuer': 'https://accounts.google.com',
         'client_id': OIDC_CLIENT_ID,
         'client_secret': OIDC_CLIENT_SECRET,
-        'redirect_uris': ['https://glace-api-vhkd.onrender.com/openid/callback'],
+        'redirect_uris': ['https://glace-api-vhkd.onrender.com/api/openid/callback'],
         'scopes': ['openid', 'email', 'profile'],
     }
 }
