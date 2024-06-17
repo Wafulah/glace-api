@@ -20,6 +20,7 @@ class InitiateGoogleLoginView(APIView):
     @csrf_exempt  # Disable CSRF for this view
     def post(self, request):
         callback_url = request.data.get('callbackUrl', settings.LOGIN_REDIRECT_URL)
+        frontend_redirect_url = settings.LOGIN_REDIRECT_URL + '/settings'
         try:
             client = Client.objects.get(client_id=settings.OIDC_CLIENT_ID)
             logger.info(f"Client found: {client}")
@@ -29,7 +30,7 @@ class InitiateGoogleLoginView(APIView):
                 f"&client_id={client.client_id}"
                 f"&redirect_uri={client.redirect_uris[0]}"
                 f"&scope=openid email profile"
-                f"&state={callback_url}"
+                f"&state={frontend_redirect_url}"
             )
             logger.info(f"Generated auth URL: {auth_url}")
 
@@ -43,8 +44,13 @@ class InitiateGoogleLoginView(APIView):
 class GoogleCallbackView(View):
     @csrf_exempt  # Disable CSRF for this view
     def get(self, request, *args, **kwargs):
-        code = request.GET.get('code')
-        state = request.GET.get('state', settings.LOGIN_REDIRECT_URL)
+        # This method should not be used for token exchange, hence no implementation required here for token exchange.
+        return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+    @csrf_exempt  # Disable CSRF for this view
+    def post(self, request, *args, **kwargs):
+        code = request.POST.get('code')
+        state = request.POST.get('state', settings.LOGIN_REDIRECT_URL)
         logger.info(f"Received code: {code} and state: {state}")
 
         if not code:
@@ -59,6 +65,7 @@ class GoogleCallbackView(View):
         }
         logger.info(f"Token data: {token_data}")
 
+        # Exchange authorization code for access token
         token_response = requests.post(settings.OIDC_TOKEN_ENDPOINT, data=token_data)
         token_response_data = token_response.json()
         logger.info(f"Token response: {token_response_data}")
@@ -67,6 +74,7 @@ class GoogleCallbackView(View):
             logger.error(f"Token endpoint error: {token_response_data['error']}")
             return JsonResponse({'error': token_response_data['error']}, status=400)
 
+        # Retrieve user info using access token
         user_info_response = requests.get(
             settings.OIDC_USERINFO_ENDPOINT,
             headers={'Authorization': f"Bearer {token_response_data['access_token']}"}
@@ -80,7 +88,6 @@ class GoogleCallbackView(View):
 
         # Redirect to the frontend with the user info or session token
         return redirect(state)
-
 @api_view(['POST'])
 def test_auth(request):
     # Print the request body
