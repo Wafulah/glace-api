@@ -132,7 +132,11 @@ def get_user_by_email(request):
         email = request.GET.get("email", "")
         if not email:
             return JsonResponse({"error": "Email parameter is required"}, status=400)
+       
 
+        email = urllib.parse.unquote(email) 
+        
+ 
         try:
             user = User.objects.get(email=email)
             user_data = {
