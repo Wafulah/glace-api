@@ -161,7 +161,7 @@ def get_user_by_id(request):
             return JsonResponse({"error": "User ID parameter is required"}, status=400)
 
         try:
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(username=user_id)
             user_data = {
                 "id": str(user.id),
                 "name": user.username,
