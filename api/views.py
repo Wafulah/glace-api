@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.views import View
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from oidc_provider.models import Client
@@ -10,7 +10,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import requests
+import json
 import logging
+import urllib.parse
 from .utils import create_or_update_user
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -106,8 +108,9 @@ class GoogleCallbackView(View):
         request.session['user'] = user_info
 
         # Redirect to the frontend with the user info or session token
-        response_data = {'authUrl': state,'session_token': access_token,'user': user_info}
-        return JsonResponse(response_data)
+        frontend_redirect_url = f"{settings.FRONTEND_BASE_URL}/api/loguser"
+        redirect_url_with_params = f"{frontend_redirect_url}?session_token={access_token}&user_info={urllib.parse.quote_plus(json.dumps(user_info))}"
+        return HttpResponseRedirect(redirect_url_with_params)
 
     
 def logout_view(request):
