@@ -41,9 +41,8 @@ class InitiateGoogleLoginView(APIView):
 
 
 class GoogleCallbackView(View):
-   
     @csrf_exempt  # Disable CSRF for this view
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         code = request.POST.get('code')
         state = request.POST.get('state', settings.LOGIN_REDIRECT_URL)
         logger.info(f"Received code: {code} and state: {state}")
