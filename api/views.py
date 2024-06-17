@@ -41,11 +41,7 @@ class InitiateGoogleLoginView(APIView):
 
 
 class GoogleCallbackView(View):
-    @csrf_exempt  # Disable CSRF for this view
-    def get(self, request, *args, **kwargs):
-        # This method should not be used for token exchange, hence no implementation required here for token exchange.
-        return JsonResponse({'error': 'Method Not Allowed'}, status=405)
-
+   
     @csrf_exempt  # Disable CSRF for this view
     def post(self, request, *args, **kwargs):
         code = request.POST.get('code')
@@ -87,6 +83,8 @@ class GoogleCallbackView(View):
 
         # Redirect to the frontend with the user info or session token
         return redirect(state)
+
+
 @api_view(['POST'])
 def test_auth(request):
     # Print the request body
