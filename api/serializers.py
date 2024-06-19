@@ -1,10 +1,66 @@
- 
 from rest_framework import serializers
-from .models import User
+from .models import Store, Image, Product, Category, County,Order,OrderItem,Customer
 
-class UserSerializer(serializers.ModelSerializer):
+class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id', 'email', 'name']
+        model = Customer
+        fields = ['id', 'first_name', 'last_name', 'email', 'image', 'phone_number']
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = '__all__'
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True, read_only=True)
+    customer = CustomerSerializer(read_only=True)
+
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+    def create(self, validated_data):
+        order_items_data = validated_data.pop('order_items')
+        order = Order.objects.create(**validated_data)
+        for item_data in order_items_data:
+            OrderItem.objects.create(order=order, **item_data)
+        return order
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = ['id', 'url']
+
+class ProductSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
+        fields = ['id', 'store', 'category', 'name', 'price', 'quantity', 'rating', 'description', 'is_archived', 'created_at', 'updated_at', 'images']
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'description', 'created_at', 'updated_at']
+
+class CountySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = County
+        fields = ['id', 'name', 'description', 'created_at', 'updated_at']
+
+class StoreSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True)
+    products = ProductSerializer(many=True, read_only=True)
+    categories = CategorySerializer(many=True, read_only=True)
+    counties = CountySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Store
+        fields = ['id', 'name', 'description', 'created_at', 'updated_at', 'latitude', 'longitude', 'paybill', 'images', 'products', 'categories', 'counties']
 
 
+
+class OrderUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['is_delivered', 'delivery_date']
+
+        
