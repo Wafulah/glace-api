@@ -166,7 +166,7 @@ def get_user_by_email(request):
 def get_user_by_id(request):
     if request.method == "GET":
         user_id = request.GET.get("id", "")
-        access_token = request.GET.get("session_token", "")
+        access_token = request.GET.get("access_token", "")
         if not user_id:
             return JsonResponse({"error": "User ID parameter is required"}, status=400)
 
@@ -186,6 +186,7 @@ def get_user_by_id(request):
                 "name": user.first_name,
                 "email": user.email,
                 "session_token":access_token,
+                "stored_token": session_token
                            }
             
             return JsonResponse(user_data)
