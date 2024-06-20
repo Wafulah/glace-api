@@ -171,11 +171,14 @@ def get_user_by_id(request):
 
         try:
             user = User.objects.get(username=user_id)
+            session_token = request.session.get('session_token', None)
             user_data = {
                 "id": str(user.id),
                 "name": user.first_name,
                 "email": user.email,
+                "session_token":session_token
             }
+            
             return JsonResponse(user_data)
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=404)
@@ -361,14 +364,20 @@ class StoreProductView(APIView):
     def get(self, request, store_id):
         try:
             category_id = request.GET.get('categoryId', None)
+            is_archived = request.GET.get('isArchived', None)
 
             store = get_object_or_404(Store, id=store_id)
             filters = {
                 'store': store,
-                'is_archived': False,
-            }
+                            }
+
+            if is_archived is not None:
+                filters['is_archived'] = is_archived.lower() == 'false'
+
+
             if category_id:
                 filters['category_id'] = category_id
+
 
             products = Product.objects.filter(**filters).order_by('-created_at')
             serializer = ProductSerializer(products, many=True)
@@ -550,7 +559,7 @@ class CategoryView(APIView):
 
     def get(self, request, store_id):
         try:
-            categories = Category.objects.filter(store_id=store_id)
+            categories = Category.objects.all()
             serializer = CategorySerializer(categories, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -693,6 +702,7 @@ class CountyDetailView(APIView):
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
 class OrderView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -703,7 +713,16 @@ class OrderView(APIView):
                 return Response({"detail": "Unauthenticated"}, status=status.HTTP_403_FORBIDDEN)
 
             store = get_object_or_404(Store, id=store_id, user=user)
-            orders = Order.objects.filter(store=store).order_by('-created_at')
+            
+            # Retrieve the isPaid query parameter
+            is_paid = request.query_params.get('isPaid')
+            
+            # Filter orders based on isPaid if the parameter is provided
+            if is_paid is not None:
+                is_paid = is_paid.lower() == 'true'  # Convert to boolean
+                orders = Order.objects.filter(store=store, is_paid=is_paid).order_by('-created_at')
+            else:
+                orders = Order.objects.filter(store=store).order_by('-created_at')
             serializer = OrderSerializer(orders, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -721,7 +740,7 @@ class OrderView(APIView):
             data = request.data
             data['store'] = store.id  # Ensure the store id is set
 
-            serializer = OrderSerializer(data=data)
+            serializer = OrderSerializer(data=data, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -732,10 +751,28 @@ class OrderView(APIView):
             logger.error("[ORDER_POST] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-
 class OrderDetailUpdateView(APIView):
     permission_classes = [IsAuthenticated]
+
+    def get(self, request, store_id, order_id):
+        try:
+            user = request.user
+            if not user.id:
+                return Response({"detail": "Unauthenticated"}, status=status.HTTP_403_FORBIDDEN)
+
+            # Retrieve the store
+            store = get_object_or_404(Store, id=store_id, user=user)
+
+            # Retrieve the order belonging to the store
+            order = get_object_or_404(Order, id=order_id, store=store)
+
+            # Serialize the order data
+            serializer = OrderSerializer(order)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error("[ORDER_GET] %s", e)
+            return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def patch(self, request, store_id, order_id):
         try:
@@ -763,7 +800,6 @@ class OrderDetailUpdateView(APIView):
         except Exception as e:
             logger.error("[ORDER_UPDATE] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class CustomerView(APIView):
 
     def get(self, request, store_id):

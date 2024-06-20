@@ -14,6 +14,7 @@ urlpatterns = [
     path('<uuid:store_id>/products/', views.StoreProductView.as_view(), name='store-products'),
     path('<uuid:store_id>/products/<uuid:product_id>/', views.StoreProductDetailView.as_view(), name='store-product-detail'),
     path('<uuid:store_id>/categories/', views.CategoryView.as_view(), name='store-categories'),
+    path('<uuid:store_id>/categories/<uuid:category_id>', views.CategoryDetailView.as_view(), name='store-detail-categories'),
     path('<uuid:store_id>/counties/<uuid:county_id>/', views.CountyDetailView.as_view(), name='county-detail'),
     path('<uuid:store_id>/counties/', views.CountyView.as_view(), name='counties'),
     path('<uuid:store_id>/orders/', views.OrderView.as_view(), name='orders'),

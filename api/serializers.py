@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.shortcuts import get_object_or_404
 from .models import Store, Image, Product, Category, County,Order,OrderItem,Customer
 
 class CustomerSerializer(serializers.ModelSerializer):
@@ -20,11 +21,20 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        order_items_data = validated_data.pop('order_items')
-        order = Order.objects.create(**validated_data)
+        order_items_data = self.context['request'].data.get('orderItems', [])
+        customer_data = self.context['request'].data.get('customer', {})
+        store_id = validated_data.pop('store').id
+        customer = get_object_or_404(Customer, id=customer_data['id'])
+
+        order = Order.objects.create(**validated_data, customer=customer)
         for item_data in order_items_data:
-            OrderItem.objects.create(order=order, **item_data)
+            product = get_object_or_404(Product, id=item_data['product']['id'])
+            quantity = item_data['quantity']
+            price = item_data['price']
+            OrderItem.objects.create(order=order, product=product, quantity=quantity, price=price)
         return order
+
+
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
