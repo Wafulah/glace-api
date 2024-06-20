@@ -52,8 +52,6 @@ AUTHENTICATION_BACKENDS = [
     'oidc_provider.backends.OpenIDConnectBackend',
 ]
 
-OIDC_SESSION_MANAGEMENT_ENABLE = True
-
 ROOT_URLCONF = 'config.urls'
 
 # Add DRF settings
