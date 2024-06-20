@@ -172,7 +172,7 @@ def get_user_by_id(request):
         try:
             
             user = User.objects.get(username=user_id)
-            session_token = request.session.get('session_token')
+            session_token = request.session.get('access_token')
             
             user_data = {
                 "id": str(user.id),
