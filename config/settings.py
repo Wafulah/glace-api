@@ -43,14 +43,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'oidc_provider.middleware.SessionManagementMiddleware',
+    
 
 ]
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'oidc_provider.backends.OpenIDConnectBackend',
-]
 
 ROOT_URLCONF = 'config.urls'
 
