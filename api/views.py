@@ -179,7 +179,6 @@ def get_user_by_id(request):
                 "name": user.first_name,
                 "email": user.email,
                 "session_token":session_token,
-                "session":request.session,
                 "user-info": user_info
             }
             
