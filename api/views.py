@@ -177,7 +177,7 @@ def get_user_by_id(request):
             
             if (access_token):
                 request.session['session_token'] = access_token 
-                request.session['user'] = user
+                request.session['user-id'] = user.id
             
             session_token = request.session.get('session_token')
 
