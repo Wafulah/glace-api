@@ -179,13 +179,13 @@ def get_user_by_id(request):
                 request.session['session_token'] = access_token 
                 request.session['user'] = user
             
-            session_token = request.session_token
+            session_token = request.session.get('session_token')
 
             user_data = {
                 "id": str(user.id),
                 "name": user.first_name,
                 "email": user.email,
-                "session_token":session_token,
+                "session_token":access_token,
                            }
             
             return JsonResponse(user_data)
