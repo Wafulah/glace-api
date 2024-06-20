@@ -790,6 +790,7 @@ class OrderDetailUpdateView(APIView):
             data = request.data
             is_delivered = data.get('isDelivered', order.is_delivered)
             delivery_date = data.get('deliveryDate', order.delivery_date)
+            is_paid = data.get('isPaid', order.is_paid)
 
             order.is_delivered = is_delivered
             order.delivery_date = delivery_date

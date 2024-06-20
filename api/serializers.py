@@ -71,6 +71,6 @@ class StoreSerializer(serializers.ModelSerializer):
 class OrderUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['is_delivered', 'delivery_date']
+        fields = ['is_delivered', 'delivery_date','is_paid']
 
         
