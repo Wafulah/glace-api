@@ -177,7 +177,7 @@ def get_user_by_id(request):
             
             if (access_token):
                 request.session['session_token'] = access_token 
-                request.session['user-id'] = user.id
+                
             
             session_token = request.session.get('session_token')
 
@@ -185,8 +185,7 @@ def get_user_by_id(request):
                 "id": str(user.id),
                 "name": user.first_name,
                 "email": user.email,
-                "session_token":access_token,
-                "stored_token": session_token
+                "session_token": session_token
                            }
             
             return JsonResponse(user_data)
