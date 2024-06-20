@@ -115,7 +115,7 @@ class GoogleCallbackView(View):
 
         # Manage session here
         request.session['user'] = user_info
-
+        request.session['session_token'] = access_token 
         # Redirect to the frontend with the user info or session token
         frontend_redirect_url = f"{settings.LOGIN_REDIRECT_URL}/api/loguser"
         redirect_url_with_params = f"{frontend_redirect_url}?session_token={access_token}&user_info={urllib.parse.quote_plus(json.dumps(user_info))}"
