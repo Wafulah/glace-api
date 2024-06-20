@@ -174,11 +174,11 @@ def get_user_by_id(request):
             
             user = User.objects.get(username=user_id)
             
-            
+            #store access token into session
             if (access_token):
                 request.session['session_token'] = access_token 
                 
-            
+            #not neccessary, just checking if session works
             session_token = request.session.get('session_token')
 
             user_data = {
