@@ -134,7 +134,7 @@ def logout_view(request):
     )
     return redirect(logout_url)    
 
-
+#Ignore this, refer to get-user-by-id
 @csrf_exempt
 @require_http_methods(["GET"])
 def get_user_by_email(request):
@@ -609,7 +609,6 @@ class CategoryView(APIView):
 
 
 
-
 class CountyView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -718,7 +717,6 @@ class CountyDetailView(APIView):
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
 class OrderView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -767,6 +765,7 @@ class OrderView(APIView):
             logger.error("[ORDER_POST] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+#For integrity issues only update is_delivered,is_paid and dekivery date.
 class OrderDetailUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -810,6 +809,7 @@ class OrderDetailUpdateView(APIView):
 
             order.is_delivered = is_delivered
             order.delivery_date = delivery_date
+            order.is_paid = is_paid
             order.save()
 
             return Response({"detail": "Order updated successfully"}, status=status.HTTP_200_OK)
