@@ -23,6 +23,7 @@ ALLOWED_HOSTS = ['glace-api-vhkd.onrender.com', 'localhost', '127.0.0.1']
 INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt',
     'api',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -56,9 +57,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
+       
     ],
 }
 

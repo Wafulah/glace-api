@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics,status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_jwt.settings import api_settings
+from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 import json
 import logging
@@ -181,20 +181,18 @@ def get_user_by_id(request):
                 
             #not neccessary, just checking if session works
             session_token = request.session.get('session_token')
-
-            #generate jwt token for authorization
-            jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-            jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
-            payload = jwt_payload_handler(user)
-            token = jwt_encode_handler(payload)
-
+ 
+            
+            # Generate JWT token for the user
+            refresh = RefreshToken.for_user(user)
+            jwt_token = str(refresh.access_token)
 
             user_data = {
                 "id": str(user.id),
                 "name": user.first_name,
                 "email": user.email,
-                "session_token": token
+                "session_token": session_token,
+                "jwt_token": jwt_token
                            }
             
             return JsonResponse(user_data)
