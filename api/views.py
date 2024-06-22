@@ -744,7 +744,7 @@ class OrderView(APIView):
             logger.error("[ORDERS_GET] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def post(self, request, store_id):
+def post(self, request, store_id):
         try:
             user = request.user
             if not user.id:
@@ -754,17 +754,41 @@ class OrderView(APIView):
             data = request.data
             data['store'] = store.id  # Ensure the store id is set
 
-            serializer = OrderSerializer(data=data, context={'request': request})
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            customer_id = data.get('customerId')
+            customer = get_object_or_404(Customer, id=customer_id, store=store)
+            
+            #TODO - check validity of phone number
+            # Create the order
+            order = Order.objects.create(
+                store=store,
+                customer=customer,
+                is_paid=data.get('isPaid', False),
+                is_delivered=data.get('isDelivered', False),
+                phone=data.get('phone', ''),
+                address=data.get('address', ''),
+                delivery_date=data.get('deliveryDate', None)  # Ensure the delivery date is set
+            )
+
+            # Create order items
+            order_items_data = data.get('orderItems', [])
+            for item_data in order_items_data:
+                product_id = item_data.get('productId')
+                product = get_object_or_404(Product, id=product_id)
+                
+                OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    quantity=item_data.get('quantity', 1),
+                    price=item_data.get('price', 0.00)
+                )
+
+            # Serialize the created order with its items
+            serializer = OrderSerializer(order, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         except Exception as e:
             logger.error("[ORDER_POST] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 #For integrity issues only update is_delivered,is_paid and dekivery date.
 class OrderDetailUpdateView(APIView):
     permission_classes = [IsAuthenticated]
