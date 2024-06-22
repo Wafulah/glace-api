@@ -833,20 +833,29 @@ class CustomerView(APIView):
             logger.error("[CUSTOMERS_GET] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
     def post(self, request, store_id):
         try:
             user = request.user
             store = get_object_or_404(Store, id=store_id, user=user)
 
-            data = request.data
-            data['store'] = store.id  # Ensure the store is set correctly
-            serializer = CustomerSerializer(data=data)
+            first_name = request.data.get('first_name')
+            last_name = request.data.get('last_name')
+            email = request.data.get('email')
+            phone_number = request.data.get('phone_number')
 
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # Create the customer with the store field
+            customer = Customer.objects.create(
+                store=store,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                phone_number=phone_number
+            )
 
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Serialize the created customer
+            serializer = CustomerSerializer(customer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         except Exception as e:
             logger.error("[CUSTOMERS_POST] %s", e)
