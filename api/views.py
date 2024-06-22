@@ -643,7 +643,7 @@ class CountyView(APIView):
             logger.error("[COUNTIES_POST] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def get(self, request):
+    def get(self, request,store_id):
         try:
             counties = County.objects.all()
             serializer = CountySerializer(counties, many=True)
