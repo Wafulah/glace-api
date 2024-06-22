@@ -5,7 +5,7 @@ from .models import Store, Image, Product, Category, County,Order,OrderItem,Cust
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ['id', 'first_name', 'last_name', 'email', 'image', 'phone_number']
+        fields = '__all__'
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
