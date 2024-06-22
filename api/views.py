@@ -818,7 +818,7 @@ class OrderDetailUpdateView(APIView):
             logger.error("[ORDER_UPDATE] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 class CustomerView(APIView):
-
+    permission_classes = [IsAuthenticated]
     def get(self, request, store_id):
         try:
             user = request.user
@@ -853,7 +853,7 @@ class CustomerView(APIView):
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CustomerDetailView(APIView):
-
+    permission_classes = [IsAuthenticated]
     def get(self, request, store_id, customer_id):
         try:
             user = request.user
