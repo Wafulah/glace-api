@@ -839,10 +839,10 @@ class CustomerView(APIView):
             user = request.user
             store = get_object_or_404(Store, id=store_id, user=user)
 
-            first_name = request.data.get('first_name')
-            last_name = request.data.get('last_name')
+            first_name = request.data.get('firstName')
+            last_name = request.data.get('lastName')
             email = request.data.get('email')
-            phone_number = request.data.get('phone_number')
+            phone_number = request.data.get('phoneNumber')
 
             # Create the customer with the store field
             customer = Customer.objects.create(
