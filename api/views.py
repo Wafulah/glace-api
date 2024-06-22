@@ -756,7 +756,7 @@ def post(self, request, store_id):
 
             customer_id = data.get('customerId')
             customer = get_object_or_404(Customer, id=customer_id, store=store)
-            
+
             #TODO - check validity of phone number
             # Create the order
             order = Order.objects.create(
@@ -863,10 +863,10 @@ class CustomerView(APIView):
             user = request.user
             store = get_object_or_404(Store, id=store_id, user=user)
 
-            first_name = request.data.get('firstName')
-            last_name = request.data.get('lastName')
+            first_name = request.data.get('first_name')
+            last_name = request.data.get('last_name')
             email = request.data.get('email')
-            phone_number = request.data.get('phoneNumber')
+            phone_number = request.data.get('phone_number')
 
             # Create the customer with the store field
             customer = Customer.objects.create(
