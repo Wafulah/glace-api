@@ -3,6 +3,13 @@ import os
 import logging
 import xml.etree.ElementTree as ET
 
+"""
+Could have used
+import africastalking
+
+This Overral Approach offers more flexibility and better debbuging
+"""
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
@@ -20,7 +27,7 @@ def send_sms(recipient, message):
         "username": AFRICASTALKING_USERNAME,
         "to": recipient,
         "message": message,
-        "from": "70142",
+        "from": 70142,
     }
 
     response = requests.post(AFRICASTALKING_ENDPOINT, headers=headers, data=data)
