@@ -744,7 +744,7 @@ class OrderView(APIView):
             logger.error("[ORDERS_GET] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-def post(self, request, store_id):
+    def post(self, request, store_id):
         try:
             user = request.user
             if not user.id:
@@ -757,7 +757,7 @@ def post(self, request, store_id):
             customer_id = data.get('customerId')
             customer = get_object_or_404(Customer, id=customer_id, store=store)
 
-            #TODO - check validity of phone number
+            # TODO - check validity of phone number
             # Create the order
             order = Order.objects.create(
                 store=store,
@@ -788,8 +788,10 @@ def post(self, request, store_id):
 
         except Exception as e:
             logger.error("[ORDER_POST] %s", e)
-            return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-#For integrity issues only update is_delivered,is_paid and dekivery date.
+            return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)                                      
+
+
+#For integrity issues only update is_delivered,is_paid and delivery date.
 class OrderDetailUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
