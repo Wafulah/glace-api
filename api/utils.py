@@ -1,6 +1,28 @@
 # utils.py
 import africastalking
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from django.db.models import Sum, F, DecimalField
+from .models import Product 
+
+def get_product_details(order_items_data):
+    product_details = []
+    total_price = 0
+    for item_data in order_items_data:
+        product_id = item_data.get('product')
+        product = get_object_or_404(Product, id=product_id)
+        quantity = item_data.get('quantity', 1)
+        price = item_data.get('price', 0.00)
+        product_total_price = quantity * price
+        total_price += product_total_price
+        product_details.append({
+            'name': product.name,
+            'quantity': quantity,
+            'price': price,
+            'total': product_total_price
+        })
+    return product_details, total_price
+
 
 def create_or_update_user(user_info):
     """
