@@ -16,7 +16,7 @@ def get_product_details(order_items_data):
         product_id = item_data.get('product')
         product = get_object_or_404(Product, id=product_id)
         quantity = item_data.get('quantity', 1)
-        price = item_data.get('price', 0.00)
+        price = item_data.product.get('price', 0.00)
         product_total_price = quantity * price
         total_price += product_total_price
         product_details.append({
@@ -60,11 +60,12 @@ class SendSMS:
     def sending(self, phone, message):
         recipients = [phone]
         sender = "70142"
-        logger.error("[SEND_SMS] %s", message,phone)
+        
         try:
             response = self.sms.send(message, recipients, sender)
-            print(response)
+            
         except Exception as e:
-            print(f'Houston, we have a problem: {e}')
+           
+            logger.error("[SEND_SMS_ERROR] %s", e)
  
 
