@@ -798,7 +798,7 @@ class OrderView(APIView):
     
             # Send SMS
             sms_sender = SendSMS()
-            sms_sender.sending(order.phone, message)
+            sms_sender.send_message(order.phone, message)
     
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     

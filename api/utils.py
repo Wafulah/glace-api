@@ -4,6 +4,7 @@ import africastalking
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, F, DecimalField
+import vonage
 from .models import Product 
 
 
@@ -47,28 +48,54 @@ def create_or_update_user(user_info):
     )
     return user
 
-africastalking.initialize(
-    username='sandbox',
-    api_key='atsk_0ef33ed384195aa69a7331f4321dc1226fe2b77c1377612a817e8a91136c9084f9234b2e'
-)
+# africastalking.initialize(
+#     username='sandbox',
+#     api_key='atsk_0ef33ed384195aa69a7331f4321dc1226fe2b77c1377612a817e8a91136c9084f9234b2e'
+# )
 
 
-sms = africastalking.SMS
+
+# sms = africastalking.SMS
+
+# class SendSMS:
+#     def __init__(self):
+#         # Initialize the SMS service
+#         self.sms = africastalking.SMS
+
+#     def sending(self, phone, message):
+#         recipients = [phone]
+#         sender = "70142"
+        
+#         try:
+#             response = self.sms.send(message, recipients, sender)
+            
+#         except Exception as e:
+           
+#             logger.error("[SEND_SMS_ERROR] %s", e)
+
+
+
+client = vonage.Client(key="38eac4fc", secret="04rNBz95SrWeewuv")
+sms = vonage.Sms(client)
 
 class SendSMS:
-    def __init__(self):
+    def __init__(self, api_key, api_secret):
         # Initialize the SMS service
-        self.sms = africastalking.SMS
+        self.client = vonage.Client(key=api_key, secret=api_secret)
+        self.sms = vonage.Sms(self.client)
 
-    def sending(self, phone, message):
-        recipients = [phone]
-        sender = "70142"
-        
-        try:
-            response = self.sms.send(message, recipients, sender)
-            
-        except Exception as e:
-           
-            logger.error("[SEND_SMS_ERROR] %s", e)
- 
+    def send_message(self, phone, message):
+        responseData = self.sms.send_message(
+            {
+                "from": "Vonage APIs",
+                "to": phone,
+                "text": message,
+            }
+        )
+
+        if responseData["messages"][0]["status"] == "0":
+            logger.info("Message sent successfully.")
+        else:
+            logger.error("Message failed with error: %s", responseData['messages'][0]['error-text'])
+
 
