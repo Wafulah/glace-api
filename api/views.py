@@ -762,11 +762,11 @@ class OrderView(APIView):
             order = Order.objects.create(
                 store=store,
                 customer=customer,
-                is_paid=data.get('isPaid', False),
-                is_delivered=data.get('isDelivered', False),
+                is_paid=data.get('is_paid', False),
+                is_delivered=data.get('is_delivered', False),
                 phone=data.get('phone', ''),
                 address=data.get('address', ''),
-                delivery_date=data.get('deliveryDate', None)  # Ensure the delivery date is set
+                delivery_date=data.get('delivery_date', None)  # Ensure the delivery date is set
             )
 
             # Create order items
@@ -829,9 +829,9 @@ class OrderDetailUpdateView(APIView):
 
             # Update the order fields
             data = request.data
-            is_delivered = data.get('isDelivered', order.is_delivered)
-            delivery_date = data.get('deliveryDate', order.delivery_date)
-            is_paid = data.get('isPaid', order.is_paid)
+            is_delivered = data.get('is_delivered', order.is_delivered)
+            delivery_date = data.get('delivery_date', order.delivery_date)
+            is_paid = data.get('is_paid', order.is_paid)
 
             order.is_delivered = is_delivered
             order.delivery_date = delivery_date
