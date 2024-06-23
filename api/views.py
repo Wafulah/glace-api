@@ -740,71 +740,72 @@ class OrderView(APIView):
         except Exception as e:
             logger.error("[ORDERS_GET] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-def post(self, request, store_id):
-    try:
-        user = request.user
-        if not user.id:
-            return Response({"detail": "Unauthenticated"}, status=status.HTTP_403_FORBIDDEN)
-
-        store = get_object_or_404(Store, id=store_id, user=user)
-        data = request.data
-        data['store'] = store.id  # Ensure the store id is set
-
-        customer_id = data.get('customerId')
-        customer = get_object_or_404(Customer, id=customer_id, store=store)
-
-        # Create the order
-        order = Order.objects.create(
-            store=store,
-            customer=customer,
-            is_paid=data.get('is_paid', False),
-            is_delivered=data.get('is_delivered', False),
-            phone=data.get('phone', ''),
-            address=data.get('address', ''),
-            delivery_date=data.get('delivery_date', None)
-        )
-
-        # Create order items
-        order_items_data = data.get('orderItems', [])
-        for item_data in order_items_data:
-            product_id = item_data.get('product')
-            product = get_object_or_404(Product, id=product_id)
-            
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                quantity=item_data.get('quantity', 1),
-                price=item_data.get('price', 0.00)
+    
+    def post(self, request, store_id):
+        try:
+            user = request.user
+            if not user.id:
+                return Response({"detail": "Unauthenticated"}, status=status.HTTP_403_FORBIDDEN)
+    
+            store = get_object_or_404(Store, id=store_id, user=user)
+            data = request.data
+            data['store'] = store.id  # Ensure the store id is set
+    
+            customer_id = data.get('customerId')
+            customer = get_object_or_404(Customer, id=customer_id, store=store)
+    
+            # Create the order
+            order = Order.objects.create(
+                store=store,
+                customer=customer,
+                is_paid=data.get('is_paid', False),
+                is_delivered=data.get('is_delivered', False),
+                phone=data.get('phone', ''),
+                address=data.get('address', ''),
+                delivery_date=data.get('delivery_date', None)
             )
-
-        # Calculate the total price
-        order.calculate_total_price()
-
-        # Serialize the created order with its items
-        serializer = OrderSerializer(order, context={'request': request})
-
-        # Get product details for SMS
-        product_details, total_price = get_product_details(order_items_data)
-        products_info = "\n".join(
-            [f"{item['quantity']} x {item['name']} @ {item['price']} each = {item['total']}" for item in product_details]
-        )
-        message = (
-            f"Order received! \n"
-            f"Items: \n{products_info}\n"
-            f"Total: {total_price}\n"
-            f"Thank you for shopping with us!"
-        )
-
-        # Send SMS
-        sms_sender = SendSMS()
-        sms_sender.sending(order.phone, message)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    except Exception as e:
-        logger.error("[ORDER_POST] %s", e)
-        return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+            # Create order items
+            order_items_data = data.get('orderItems', [])
+            for item_data in order_items_data:
+                product_id = item_data.get('product')
+                product = get_object_or_404(Product, id=product_id)
+                
+                OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    quantity=item_data.get('quantity', 1),
+                    price=item_data.get('price', 0.00)
+                )
+    
+            # Calculate the total price
+            order.calculate_total_price()
+    
+            # Serialize the created order with its items
+            serializer = OrderSerializer(order, context={'request': request})
+    
+            # Get product details for SMS
+            product_details, total_price = get_product_details(order_items_data)
+            products_info = "\n".join(
+                [f"{item['quantity']} x {item['name']} @ {item['price']} each = {item['total']}" for item in product_details]
+            )
+            message = (
+                f"Order received! \n"
+                f"Items: \n{products_info}\n"
+                f"Total: {total_price}\n"
+                f"Thank you for shopping with us!"
+            )
+    
+            # Send SMS
+            sms_sender = SendSMS()
+            sms_sender.sending(order.phone, message)
+    
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+        except Exception as e:
+            logger.error("[ORDER_POST] %s", e)
+            return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
 #For integrity issues only update is_delivered,is_paid and delivery date.
 class OrderDetailUpdateView(APIView):
     permission_classes = [IsAuthenticated]
