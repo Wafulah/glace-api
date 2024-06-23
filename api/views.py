@@ -16,6 +16,7 @@ import requests
 import json
 import logging
 import urllib.parse
+from . import africastalking_api
 from .utils import create_or_update_user,SendSMS,get_product_details
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -798,8 +799,11 @@ class OrderView(APIView):
             )
     
             # Send SMS
-            sms_sender = SendSMS()
-            sms_sender.send_message(order.phone, message)
+            # sms_sender = SendSMS()
+            # sms_sender.send_message(order.phone, message)
+
+            response = africastalking_api.send_sms(order.phone, message)
+            logger.error("[AFT_POST] %s", response)
     
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     
