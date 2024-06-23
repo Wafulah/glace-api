@@ -786,7 +786,7 @@ class OrderView(APIView):
             serializer = OrderSerializer(order, context={'request': request})
     
             # Get product details for SMS
-            product_details, total_price = get_product_details(order_items_data,store)
+            product_details, total_price = get_product_details(order_items_data)
             products_info = "\n".join(
                 [f"{item['quantity']} x {item['name']} @ {item['price']} each = {item['total']}" for item in product_details]
             )
@@ -794,7 +794,7 @@ class OrderView(APIView):
                 f"Order received! \n"
                 f"Items: \n{products_info}\n"
                 f"Total: {total_price}\n"
-                f"Thank you for shopping with us at {product_details.store}\n"
+                f"Thank you for shopping with us at {store.name}\n"
                 f"Glace your Health care partner!"
             )
     

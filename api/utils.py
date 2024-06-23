@@ -11,7 +11,7 @@ from .models import Product
 
 logger = logging.getLogger(__name__)
 
-def get_product_details(order_items_data,store):
+def get_product_details(order_items_data):
     product_details = []
     total_price = 0
     for item_data in order_items_data:
@@ -26,8 +26,7 @@ def get_product_details(order_items_data,store):
             'quantity': quantity,
             'price': price,
             'total': product_total_price,
-            'store': store.name
-        })
+            })
     return product_details, total_price
 
 
