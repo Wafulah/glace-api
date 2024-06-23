@@ -1,17 +1,26 @@
-# utils.py
 import logging
-
 import os
-from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
-from django.core.mail import send_mail
-import vonage
-from .models import Product 
 
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+import vonage
+
+from .models import Product
 
 logger = logging.getLogger(__name__)
 
 def get_product_details(order_items_data):
+    """
+    Format data to send to the customer after an order is successfully placed.
+    
+    Args:
+        order_items_data (list): List of dictionaries containing order item data.
+        
+    Returns:
+        list: Formatted product details.
+        float: Total price of the order.
+    """
     product_details = []
     total_price = 0
     for item_data in order_items_data:
@@ -26,18 +35,23 @@ def get_product_details(order_items_data):
             'quantity': quantity,
             'price': price,
             'total': product_total_price,
-            })
+        })
     return product_details, total_price
-
 
 def create_or_update_user(user_info):
     """
     Create or update a user based on the information obtained from Google.
+    
+    Args:
+        user_info (dict): Dictionary containing user information from Google.
+        
+    Returns:
+        User: The created or updated user instance.
     """
     email = user_info.get('email')
     first_name = user_info.get('given_name')
     last_name = user_info.get('family_name')
-    sub=user_info.get('sub')
+    sub = user_info.get('sub')
 
     user, created = User.objects.update_or_create(
         email=email,
@@ -47,48 +61,60 @@ def create_or_update_user(user_info):
             'username': sub,
         }
     )
-    message = (
-                f"Dear {first_name}, {last_name} \n"
-                f"We are thrilled to welcome you as part of our community here at Glace!\n"
-                f"Your username is : {sub}\n"
-                f"Glace your Health care partner!"
-            )
+
     subject = "Welcome to Glace"
-    recipient= email
-    send_email(message,subject,recipient)
+    message = (
+        f"Dear {first_name} {last_name},\n"
+        f"We are thrilled to welcome you as part of our community here at Glace!\n"
+        f"Your username is: {sub}\n"
+        f"Glace, your Health care partner!"
+    )
+    send_email(message, subject, email)
     return user
 
-
-#This service has a limited plan that sends actually sms,the trial amount maybe over when you are accessing this
-client = vonage.Client(key=os.getenv("VONAGE_API_KEY"), secret=os.getenv("VONAGE_API_SECRET"))
-sms = vonage.Sms(client)
-
 class SendSMS:
+    """
+    Use Vonage to send SMS messages. Ensure the service is configured correctly.
+    """
     def __init__(self):
-        # Initialize the SMS service using environment variables
         api_key = os.getenv("VONAGE_API_KEY")
         api_secret = os.getenv("VONAGE_API_SECRET")
         self.client = vonage.Client(key=api_key, secret=api_secret)
         self.sms = vonage.Sms(self.client)
 
     def send_message(self, phone, message):
-        responseData = self.sms.send_message(
-            {
-                "from": "Vonage APIs",
-                "to": phone,
-                "text": message,
-            }
-        )
+        """
+        Send an SMS message.
+        
+        Args:
+            phone (str): The recipient's phone number.
+            message (str): The message to send.
+        """
+        response_data = self.sms.send_message({
+            "from": "Vonage APIs",
+            "to": phone,
+            "text": message,
+        })
 
-        if responseData["messages"][0]["status"] == "0":
+        if response_data["messages"][0]["status"] == "0":
             logger.info("Message sent successfully.")
         else:
-            logger.error("Message failed with error: %s", responseData['messages'][0]['error-text'])
+            logger.error("Message failed with error: %s", response_data["messages"][0]["error-text"])
 
-
-def send_email(message,subject,recipient):
+def send_email(message, subject, recipient):
+    """
+    Send email notifications to users.
+    
+    Args:
+        message (str): The email message content.
+        subject (str): The email subject.
+        recipient (str): The recipient's email address.
+    """
     from_email = os.getenv('EMAIL_HOST_USER')
-
     recipient_list = [recipient]
 
-    send_mail(subject, message, from_email, recipient_list)
+    try:
+        send_mail(subject, message, from_email, recipient_list)
+        logger.info("Email sent successfully to %s", recipient)
+    except Exception as e:
+        logger.error("Failed to send email to %s: %s", recipient, e)
