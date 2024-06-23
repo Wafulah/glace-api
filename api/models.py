@@ -105,7 +105,7 @@ class Order(models.Model):
 
     def calculate_total_price(self):
         total_price = self.order_items.aggregate(
-            total=Sum(F('quantity') * F('price'), output_field=DecimalField())
+            total=Sum(F('price'), output_field=DecimalField())
         )['total'] or 0
         self.total_price = total_price
         self.save()    
