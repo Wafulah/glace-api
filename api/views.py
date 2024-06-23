@@ -772,7 +772,7 @@ class OrderView(APIView):
             # Create order items
             order_items_data = data.get('orderItems', [])
             for item_data in order_items_data:
-                product_id = item_data.get('productId')
+                product_id = item_data.get('product')
                 product = get_object_or_404(Product, id=product_id)
                 
                 OrderItem.objects.create(
