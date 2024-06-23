@@ -1,6 +1,7 @@
 # utils.py
 import logging
 import africastalking
+import os
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, F, DecimalField
@@ -75,12 +76,14 @@ def create_or_update_user(user_info):
 
 
 
-client = vonage.Client(key="38eac4fc", secret="04rNBz95SrWeewuv")
+client = vonage.Client(key=os.getenv("VONAGE_API_KEY"), secret=os.getenv("VONAGE_API_SECRET"))
 sms = vonage.Sms(client)
 
 class SendSMS:
-    def __init__(self, api_key, api_secret):
-        # Initialize the SMS service
+    def __init__(self):
+        # Initialize the SMS service using environment variables
+        api_key = os.getenv("VONAGE_API_KEY")
+        api_secret = os.getenv("VONAGE_API_SECRET")
         self.client = vonage.Client(key=api_key, secret=api_secret)
         self.sms = vonage.Sms(self.client)
 
