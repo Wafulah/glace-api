@@ -12,9 +12,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = '__all__'
 
+
 class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True, read_only=True)
     customer = CustomerSerializer(read_only=True)
+    total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = Order
@@ -32,6 +34,8 @@ class OrderSerializer(serializers.ModelSerializer):
             quantity = item_data['quantity']
             price = item_data['price']
             OrderItem.objects.create(order=order, product=product, quantity=quantity, price=price)
+
+        order.calculate_total_price()
         return order
 
 

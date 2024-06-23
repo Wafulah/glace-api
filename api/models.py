@@ -1,7 +1,7 @@
 from django.db import models
 import uuid
 from django.contrib.auth.models import User
-
+from django.db.models import Sum, F, DecimalField
 
 class Store(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -95,13 +95,20 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     delivery_date = models.DateTimeField(auto_now_add=True)
-    
-   
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+     
     class Meta:
         indexes = [
             models.Index(fields=['store']),
             models.Index(fields=['customer']),
         ]
+
+    def calculate_total_price(self):
+        total_price = self.order_items.aggregate(
+            total=Sum(F('quantity') * F('price'), output_field=DecimalField())
+        )['total'] or 0
+        self.total_price = total_price
+        self.save()    
 
 class OrderItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

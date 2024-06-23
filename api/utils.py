@@ -1,5 +1,5 @@
 # utils.py
-
+import africastalking
 from django.contrib.auth.models import User
 
 def create_or_update_user(user_info):
@@ -20,3 +20,26 @@ def create_or_update_user(user_info):
         }
     )
     return user
+
+africastalking.initialize(
+    username='sandbox',
+    api_key='atsk_0ef33ed384195aa69a7331f4321dc1226fe2b77c1377612a817e8a91136c9084f9234b2e'
+)
+
+
+sms = africastalking.SMS
+
+class SendSMS:
+    def __init__(self):
+        self.sms = sms
+
+    def sending(self, phone, message):
+        recipients = [phone]
+        sender = "70142"
+        try:
+            response = self.sms.send(message, recipients, sender)
+            print(response)
+        except Exception as e:
+            print(f'Houston, we have a problem: {e}')
+ 
+

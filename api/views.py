@@ -16,7 +16,7 @@ import requests
 import json
 import logging
 import urllib.parse
-from .utils import create_or_update_user
+from .utils import create_or_update_user,SendSMS
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User 
@@ -26,9 +26,6 @@ from .serializers import StoreSerializer,OrderUpdateSerializer, ProductSerialize
 
 
 logger = logging.getLogger(__name__)
-
-
-
 
 
 class InitiateGoogleLoginView(APIView):
@@ -784,6 +781,12 @@ class OrderView(APIView):
 
             # Serialize the created order with its items
             serializer = OrderSerializer(order, context={'request': request})
+
+                        # Send SMS
+            items_details = "\n".join([f"{item['product']}: {item['quantity']} @ {item['price']}" for item in order_items_data])
+            message = f"Order received! \nItems: \n{items_details}\nTotal: {order.total_price}"
+            SendSMS().sending(order.phone, message)
+            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         except Exception as e:
