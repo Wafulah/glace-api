@@ -16,7 +16,7 @@ def get_product_details(order_items_data):
         product_id = item_data.get('product')
         product = get_object_or_404(Product, id=product_id)
         quantity = item_data.get('quantity', 1)
-        price = item_data.product.get('price', 0.00)
+        price = product.price
         product_total_price = quantity * price
         total_price += product_total_price
         product_details.append({
