@@ -18,7 +18,7 @@ def send_sms(recipient, message):
 
     data = {
         "to": recipient,
-        "from": "70142",  # Replace with your desired Sender ID
+        "from": "70142",  
         "message": message,
     }
 
