@@ -1,6 +1,6 @@
 # utils.py
 import logging
-import africastalking
+
 import os
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -49,33 +49,8 @@ def create_or_update_user(user_info):
     )
     return user
 
-# africastalking.initialize(
-#     username='sandbox',
-#     api_key='atsk_0ef33ed384195aa69a7331f4321dc1226fe2b77c1377612a817e8a91136c9084f9234b2e'
-# )
 
-
-
-# sms = africastalking.SMS
-
-# class SendSMS:
-#     def __init__(self):
-#         # Initialize the SMS service
-#         self.sms = africastalking.SMS
-
-#     def sending(self, phone, message):
-#         recipients = [phone]
-#         sender = "70142"
-        
-#         try:
-#             response = self.sms.send(message, recipients, sender)
-            
-#         except Exception as e:
-           
-#             logger.error("[SEND_SMS_ERROR] %s", e)
-
-
-
+#This service has a limited plan that sends actually sms,the trial amount maybe over when you are accessing this
 client = vonage.Client(key=os.getenv("VONAGE_API_KEY"), secret=os.getenv("VONAGE_API_SECRET"))
 sms = vonage.Sms(client)
 
