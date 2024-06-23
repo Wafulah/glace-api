@@ -1,7 +1,7 @@
 import requests
 import os
 import logging
-
+import xml.etree.ElementTree as ET
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -9,8 +9,8 @@ logging.basicConfig(level=logging.DEBUG)
 AFRICASTALKING_USERNAME = "sandbox"
 AFRICASTALKING_API_KEY = os.getenv("AT_API_KEY")
 AFRICASTALKING_ENDPOINT = "https://api.sandbox.africastalking.com/version1/messaging"
-def send_sms(recipient, message):
 
+def send_sms(recipient, message):
     headers = {
         "apiKey": AFRICASTALKING_API_KEY,
         "Content-Type": "application/x-www-form-urlencoded",
@@ -19,8 +19,8 @@ def send_sms(recipient, message):
     data = {
         "username": AFRICASTALKING_USERNAME,
         "to": recipient,
-        "from": "70142",
         "message": message,
+        "from": "70142",
     }
 
     response = requests.post(AFRICASTALKING_ENDPOINT, headers=headers, data=data)
@@ -29,9 +29,27 @@ def send_sms(recipient, message):
     logger.debug("[AFT_POST_RESPONSE_CONTENT] %s", response.content)
 
     try:
-        response_json = response.json()
-        logger.debug("[AFT_POST_RESPONSE_JSON] %s", response_json)
-        return response_json
-    except ValueError as e:
-        logger.error("[AFT_POST_RESPONSE_JSON_ERROR] %s", e)
-        return {"error": "Invalid JSON response", "content": response.content}
+        # Parse XML response
+        xml_root = ET.fromstring(response.content)
+        message = xml_root.find('SMSMessageData/Message').text
+        recipients = xml_root.find('SMSMessageData/Recipients')
+        recipient_list = []
+        for recipient in recipients.findall('Recipient'):
+            recipient_data = {
+                'statusCode': int(recipient.find('statusCode').text),
+                'number': recipient.find('number').text,
+                'cost': recipient.find('cost').text,
+                'status': recipient.find('status').text,
+                'messageId': recipient.find('messageId').text,
+            }
+            recipient_list.append(recipient_data)
+
+        result = {
+            'Message': message,
+            'Recipients': recipient_list,
+        }
+        return result
+
+    except Exception as e:
+        logger.error("[AFT_POST_RESPONSE_XML_PARSE_ERROR] %s", e)
+        return {"error": "Error parsing XML response", "content": response.content}
