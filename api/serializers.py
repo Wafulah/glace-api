@@ -28,7 +28,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
         order = Order.objects.create(**validated_data, customer=customer)
         for item_data in order_items_data:
-            product = get_object_or_404(Product, id=item_data['product']['id'])
+            product = get_object_or_404(Product, id=item_data['product'])
             quantity = item_data['quantity']
             price = item_data['price']
             OrderItem.objects.create(order=order, product=product, quantity=quantity, price=price)
