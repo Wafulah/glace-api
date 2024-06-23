@@ -17,7 +17,7 @@ import json
 import logging
 import urllib.parse
 from . import africastalking_api
-from .utils import create_or_update_user,SendSMS,get_product_details
+from .utils import create_or_update_user,SendSMS,get_product_details,send_email
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User 
@@ -797,7 +797,9 @@ class OrderView(APIView):
                 f"Thank you for shopping with us at {store.name}\n"
                 f"Glace your Health care partner!"
             )
-    
+            subject="Order Received!"
+            recipient=customer.email
+            send_email(message,subject,recipient)
             # Send SMS using vonage, has free tier for live testing purposes
             # sms_sender = SendSMS()
             # sms_sender.send_message(order.phone, message)
@@ -858,7 +860,7 @@ class OrderDetailUpdateView(APIView):
             order.delivery_date = delivery_date
             order.is_paid = is_paid
             order.save()
-
+                        
             return Response({"detail": "Order updated successfully"}, status=status.HTTP_200_OK)
 
         except Exception as e:

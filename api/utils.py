@@ -4,7 +4,7 @@ import logging
 import os
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from django.db.models import Sum, F, DecimalField
+from django.core.mail import send_mail
 import vonage
 from .models import Product 
 
@@ -47,6 +47,15 @@ def create_or_update_user(user_info):
             'username': sub,
         }
     )
+    message = (
+                f"Dear {first_name}, {last_name} \n"
+                f"We are thrilled to welcome you as part of our community here at Glace!\n"
+                f"Your username is : {sub}\n"
+                f"Glace your Health care partner!"
+            )
+    subject = "Welcome to Glace"
+    recipient= email
+    send_email(message,subject,recipient)
     return user
 
 
@@ -77,3 +86,9 @@ class SendSMS:
             logger.error("Message failed with error: %s", responseData['messages'][0]['error-text'])
 
 
+def send_email(message,subject,recipient):
+    from_email = os.getenv('EMAIL_HOST_USER')
+
+    recipient_list = [recipient]
+
+    send_mail(subject, message, from_email, recipient_list)
