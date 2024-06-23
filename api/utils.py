@@ -1,9 +1,13 @@
 # utils.py
+import logging
 import africastalking
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, F, DecimalField
 from .models import Product 
+
+
+logger = logging.getLogger(__name__)
 
 def get_product_details(order_items_data):
     product_details = []
@@ -56,6 +60,7 @@ class SendSMS:
     def sending(self, phone, message):
         recipients = [phone]
         sender = "70142"
+        logger.error("[SEND_SMS] %s", message,phone)
         try:
             response = self.sms.send(message, recipients, sender)
             print(response)
