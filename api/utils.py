@@ -49,7 +49,7 @@ def create_or_update_user(user_info):
 
 africastalking.initialize(
     username='sandbox',
-    api_key='atsk_0ef33ed384195aa69a7331f4321dc1226fe2b77c1377612a817e8a91136c9084f9234b2e'
+    api_key='atsk_2ba2ee8c44192fcb43ca3b4d2e91a122aa2b8489d010dca5a069ea2706c337735bfffc38'
 )
 
 
