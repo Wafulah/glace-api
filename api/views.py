@@ -763,8 +763,7 @@ class OrderView(APIView):
                 is_delivered=data.get('is_delivered', False),
                 phone=data.get('phone', ''),
                 address=data.get('address', ''),
-                delivery_date=data.get('delivery_date', None)  # Ensure the delivery date is set
-            )
+                delivery_date=data.get('delivery_date', None)             )
 
             # Create order items
             order_items_data = data.get('orderItems', [])
@@ -783,10 +782,22 @@ class OrderView(APIView):
             serializer = OrderSerializer(order, context={'request': request})
 
                         # Send SMS
-            items_details = "\n".join([f"{item['product']}: {item['quantity']} @ {item['price']}" for item in order_items_data])
-            message = f"Order received! \nItems: \n{items_details}\nTotal: {order.total_price}"
-            SendSMS().sending(order.phone, message)
-            
+            if serializer.is_valid():
+                order = serializer.save()
+                
+                # Send SMS
+                products_info = "\n".join(
+                    [f"{item['quantity']} x {item['product']} @ {item['price']} each" for item in data['orderItems']]
+                )
+                message = (
+                    f"Order received! \n"
+                    f"Items: \n{products_info}\n"
+                    f"Total: {order.total_price}\n"
+                    f"Thank you for shopping with us!"
+                )
+                sms_sender = SendSMS()
+                sms_sender.sending(order.phone, message)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         except Exception as e:
