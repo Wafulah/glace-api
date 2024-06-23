@@ -798,12 +798,13 @@ class OrderView(APIView):
                 f"Glace your Health care partner!"
             )
     
-            # Send SMS
+            # Send SMS using vonage, has free tier for live testing purposes
             # sms_sender = SendSMS()
             # sms_sender.send_message(order.phone, message)
 
+            #africa's talking function for sending sms, returns 101 - success
             response = africastalking_api.send_sms(order.phone, message)
-            logger.error("[AFT_POST] %s", response)
+            
     
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     
