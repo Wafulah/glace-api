@@ -56,6 +56,9 @@ africastalking.initialize(
 sms = africastalking.SMS
 
 class SendSMS:
+    def __init__(self):
+        # Initialize the SMS service
+        self.sms = africastalking.SMS
 
     def sending(self, phone, message):
         recipients = [phone]
