@@ -250,7 +250,7 @@ class StoreDetailView(APIView):
             serializer = StoreSerializer(store)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            logger.error("[SPECIFIC_STORE_GET] %s", e)
+            logger.error("[SPECIFIC_STORE_GET] %s", str(e))
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def patch(self, request, store_id):
@@ -297,13 +297,13 @@ class StoreDetailView(APIView):
 
                 # Handle categories and counties separately
                 if categories:
-                    store.categories.clear()
+                    store.categories.all().delete()
                     for category_data in categories:
                         category = get_object_or_404(Category, id=category_data['id'])
                         store.categories.add(category)
 
                 if counties:
-                    store.counties.clear()
+                    store.counties.all().delete()
                     for county_data in counties:
                         county = get_object_or_404(County, id=county_data['id'])
                         store.counties.add(county)
@@ -311,7 +311,7 @@ class StoreDetailView(APIView):
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            logger.error("[STORE_PATCH] %s", e)
+            logger.error("[STORE_PATCH] %s", str(e))
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def delete(self, request, store_id):
@@ -321,9 +321,8 @@ class StoreDetailView(APIView):
             store.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
-            logger.error("[STORE_DELETE] %s", e)
+            logger.error("[STORE_DELETE] %s", str(e))
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class StoreProductView(APIView):
     permission_classes = [IsAuthenticated]
