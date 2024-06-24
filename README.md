@@ -20,7 +20,7 @@ Glace is a software designed for pharmacies and chemists to manage their invento
 - Run `python manage.py runserver` for the backend.
 - Or access the application through your web browser at https://glace-store.vercel.app.
 
-##SECTION -  Initial Setup
+##SECTION - Initial Setup
 
 1. Login:
 
@@ -88,6 +88,21 @@ Glace is a software designed for pharmacies and chemists to manage their invento
 
 - Next.js (using authjs) regularly queries an endpoint to ensure the JWT token is up-to-date and hasn't expired.
 - Sessions are used to keep the user logged in, ensuring a seamless user experience.
+
+##SECTION - Additional Information
+
+# Assumptions
+
+- A lot of data processing is done by the frontend; hence, the backend only checks for crucial data errors.
+
+#TODO - To-Do
+
+- Improve error handling to capture more specific errors.
+- Only tests for orders are currently being carried out; more tests need to be written later.
+- Improve CI/CD checks and validation.
+
+#NOTE - Notes
+-This is just a basic setup upon which more advanced features can be built.
 
 ## Credits
 
