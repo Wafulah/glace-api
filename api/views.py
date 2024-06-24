@@ -391,7 +391,7 @@ class StoreProductView(APIView):
         try:
             category_id = request.GET.get('categoryId', None)
             is_archived = request.GET.get('isArchived', None)
-            logger.error("[Filters archive] %s",is_archived) 
+            
             store = get_object_or_404(Store, id=store_id)
             filters = {
                 'store': store,
@@ -404,7 +404,7 @@ class StoreProductView(APIView):
             if category_id:
                 filters['category_id'] = category_id
 
-            logger.error("[Filters] %s",filters)
+            
             products = Product.objects.filter(**filters).order_by('-created_at')
             serializer = ProductSerializer(products, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
