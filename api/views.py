@@ -1,30 +1,35 @@
-from django.shortcuts import redirect,get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.views import View
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+from django.views.decorators.http import require_http_methods
+
 from oidc_provider.models import Client
 from oidc_provider.lib.utils.oauth2 import protected_resource_view
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import generics,status
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+
 import requests
 import json
 import logging
 import urllib.parse
+
 from . import africastalking_api
-from .utils import create_or_update_user,SendSMS,get_product_details,send_email
-from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
-from django.contrib.auth.models import User 
-from .models import Store, Image, County,Product, Category,Order,OrderItem,Customer
-from .serializers import StoreSerializer,OrderUpdateSerializer, ProductSerializer, ImageSerializer,CategorySerializer,CountySerializer,OrderSerializer, OrderItemSerializer, CustomerSerializer
-
-
+from .utils import create_or_update_user, SendSMS, get_product_details, send_email
+from .models import Store, Image, County, Product, Category, Order, OrderItem, Customer
+from .serializers import (
+    StoreSerializer, OrderUpdateSerializer, ProductSerializer, 
+    ImageSerializer, CategorySerializer, CountySerializer, 
+    OrderSerializer, OrderItemSerializer, CustomerSerializer
+)
 
 logger = logging.getLogger(__name__)
 

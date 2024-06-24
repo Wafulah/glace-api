@@ -3,6 +3,37 @@ import uuid
 from django.contrib.auth.models import User
 from django.db.models import Sum, F, DecimalField
 
+"""
+Models representing entities in the system where a user must own a store to operate:
+
+1. Store:
+   - Represents a store owned by a user.
+   - Each store can create its own products and manage customers.
+
+2. Category:
+   - Represents a category within a store for organizing products.
+
+3. County:
+   - Represents administrative divisions associated with a store.
+
+4. Product:
+   - Represents a product available in a store's inventory.
+
+5. Customer:
+   - Represents a customer associated with a specific store.
+
+6. Order:
+   - Represents an order created by a store using products and customers in its database.
+
+7. OrderItem:
+   - Represents individual items within an order linked to specific products.
+
+8. Image:
+   - Represents images associated with products or stores.
+"""
+
+
+
 class Store(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
