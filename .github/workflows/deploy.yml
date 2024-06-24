@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Install dependencies
         run: |
@@ -25,8 +25,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest  # Replace with your actual test command
-
+          python manage.py test api.tests.test_views
       - name: Run migrations
         run: |
           python manage.py migrate
@@ -38,4 +37,5 @@ jobs:
           RENDER_TOKEN: ${{ secrets.RENDER_DEPLOY_KEY }}
 
       - name: Test deployment
-        run:
+        run: |
+          curl -I https://glace-api-vhkd.onrender.com
