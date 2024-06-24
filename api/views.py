@@ -384,7 +384,7 @@ class StoreProductView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         except Exception as e:
-            logger.error("[PRODUCTS_GET] %s", e)
+            logger.error("[PRODUCTS_POST] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request, store_id):
@@ -404,7 +404,7 @@ class StoreProductView(APIView):
             if category_id:
                 filters['category_id'] = category_id
 
-
+            logger.error("[Filters] %s",filters)
             products = Product.objects.filter(**filters).order_by('-created_at')
             serializer = ProductSerializer(products, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
