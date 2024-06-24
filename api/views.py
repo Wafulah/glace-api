@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.views import View
 from django.conf import settings
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect,Http404
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
@@ -239,7 +239,6 @@ class StoreView(APIView):
         except Exception as e:
             logger.error("[STORES_POST] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)   
-
 class StoreDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -297,16 +296,26 @@ class StoreDetailView(APIView):
 
                 # Handle categories and counties separately
                 if categories:
-                    store.categories.all().delete()
-                    for category_data in categories:
-                        category = get_object_or_404(Category, id=category_data['id'])
-                        store.categories.add(category)
+                    try:
+                        store.categories.all().delete()
+                        for category_data in categories:
+                            category = get_object_or_404(Category, id=category_data['id'])
+                            store.categories.add(category)
+                    except Http404 as e:
+                        logger.error("Category not found with id %s", category_data['id'])
+                        return Response({"detail": f"Category not found with id {category_data['id']}"},
+                                        status=status.HTTP_404_NOT_FOUND)
 
                 if counties:
-                    store.counties.all().delete()
-                    for county_data in counties:
-                        county = get_object_or_404(County, id=county_data['id'])
-                        store.counties.add(county)
+                    try:
+                        store.counties.all().delete()
+                        for county_data in counties:
+                            county = get_object_or_404(County, id=county_data['id'])
+                            store.counties.add(county)
+                    except Http404 as e:
+                        logger.error("County not found with id %s", county_data['id'])
+                        return Response({"detail": f"County not found with id {county_data['id']}"},
+                                        status=status.HTTP_404_NOT_FOUND)
 
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -323,7 +332,6 @@ class StoreDetailView(APIView):
         except Exception as e:
             logger.error("[STORE_DELETE] %s", str(e))
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 class StoreProductView(APIView):
     permission_classes = [IsAuthenticated]
 
