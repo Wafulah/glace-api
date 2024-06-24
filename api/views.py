@@ -391,7 +391,7 @@ class StoreProductView(APIView):
         try:
             category_id = request.GET.get('categoryId', None)
             is_archived = request.GET.get('isArchived', None)
-
+            logger.error("[Filters archive] %s",is_archived) 
             store = get_object_or_404(Store, id=store_id)
             filters = {
                 'store': store,
