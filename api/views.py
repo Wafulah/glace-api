@@ -377,7 +377,7 @@ class StoreProductView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         except Exception as e:
-            print("[PRODUCTS_POST]", e)
+            logger.error("[PRODUCTS_GET] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request, store_id):
@@ -403,7 +403,7 @@ class StoreProductView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
-            print("[PRODUCTS_GET]", e)
+            logger.error("[PRODUCTS_GET] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class StoreProductDetailView(APIView):
@@ -419,7 +419,7 @@ class StoreProductDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
-            print("[PRODUCT_GET]", e)
+            logger.error("[PRODUCT_GET] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, store_id, product_id):
@@ -438,7 +438,7 @@ class StoreProductDetailView(APIView):
             return Response({"detail": "Product deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
         except Exception as e:
-            print("[PRODUCT_DELETE]", e)
+            logger.error("[PRODUCT_DELETE] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def patch(self, request, store_id, product_id):
@@ -497,7 +497,7 @@ class StoreProductDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
-            print("[PRODUCT_PATCH]", e)
+            logger.error("[PRODUCT_PATCH] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CategoryDetailView(APIView):
@@ -513,7 +513,7 @@ class CategoryDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
-            print("[CATEGORY_GET]", e)
+            logger.error("[CATEGORY_GET] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, store_id, category_id):
@@ -533,7 +533,7 @@ class CategoryDetailView(APIView):
             return Response({"detail": "Category deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
         except Exception as e:
-            print("[CATEGORY_DELETE]", e)
+            logger.error("[CATEGORY_DELETE] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def patch(self, request, store_id, category_id):
@@ -569,7 +569,7 @@ class CategoryDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
-            print("[CATEGORY_PATCH]", e)
+            logger.error("[CATEGORY_PATCH] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -582,7 +582,7 @@ class CategoryView(APIView):
             serializer = CategorySerializer(categories, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            print("[CATEGORIES_GET]", e)
+            logger.error("[CATEGORY_GET] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, store_id):
@@ -607,7 +607,7 @@ class CategoryView(APIView):
             serializer = CategorySerializer(category)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
-            print("[CATEGORIES_POST]", e)
+            logger.error("[CATEGORY_POST] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
