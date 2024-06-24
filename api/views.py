@@ -396,9 +396,9 @@ class StoreProductView(APIView):
             filters = {
                 'store': store,
                             }
-
+  
             if is_archived is not None:
-                filters['is_archived'] = is_archived.lower() == 'false'
+               filters['is_archived'] = is_archived.lower() == 'true'
 
 
             if category_id:
