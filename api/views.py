@@ -218,7 +218,7 @@ class StoreView(APIView):
             serializer = StoreSerializer(stores, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            print("[STORES_GET]", e)
+            logger.error("[STORES_GET] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request):
@@ -237,7 +237,7 @@ class StoreView(APIView):
             serializer = StoreSerializer(store)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
-            print("[STORES_POST]", e)
+            logger.error("[STORES_POST] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)   
 
 class StoreDetailView(APIView):
@@ -250,7 +250,7 @@ class StoreDetailView(APIView):
             serializer = StoreSerializer(store)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            print("[SPECIFIC_STORE_GET]", e)
+            logger.error("[SPECIFIC_STORE_GET] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def patch(self, request, store_id):
@@ -266,7 +266,7 @@ class StoreDetailView(APIView):
             categories = data.get('categories', [])
             counties = data.get('counties', [])
 
-            if not user:
+            if not user.id:
                 return Response({"detail": "Unauthenticated"}, status=status.HTTP_403_FORBIDDEN)
 
             if not name:
@@ -311,7 +311,7 @@ class StoreDetailView(APIView):
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print("[STORE_PATCH]", e)
+            logger.error("[STORE_PATCH] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def delete(self, request, store_id):
@@ -321,7 +321,7 @@ class StoreDetailView(APIView):
             store.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
-            print("[STORE_DELETE]", e)
+            logger.error("[STORE_DELETE] %s", e)
             return Response({"detail": "Internal error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
