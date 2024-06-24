@@ -295,7 +295,6 @@ class StoreDetailView(APIView):
                     Image.objects.create(store=store, **image_data)
 
                 # Handle categories and counties separately
-                # Handle categories and counties separately
                 if categories:
                     try:
                         store.categories.clear()  # Disconnect all existing categories

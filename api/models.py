@@ -44,6 +44,8 @@ class Store(models.Model):
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
     paybill = models.CharField(max_length=255, null=True, blank=True)
+    categories = models.ManyToManyField('Category', related_name='stores', blank=True)
+    counties = models.ManyToManyField('County', related_name='stores', blank=True)
 
     def __str__(self):
         return self.name
@@ -51,7 +53,6 @@ class Store(models.Model):
 
 class Category(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    store = models.ForeignKey(Store, related_name='categories', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     image_url = models.URLField(max_length=200)
     description = models.TextField()
@@ -63,12 +64,11 @@ class Category(models.Model):
         return self.name
     class Meta:
         indexes = [
-            models.Index(fields=['store']),
+            models.Index(fields=['name']),
         ]
 
 class County(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    store = models.ForeignKey(Store, related_name='counties', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -79,7 +79,7 @@ class County(models.Model):
         return self.name
     class Meta:
         indexes = [
-            models.Index(fields=['store']),
+            models.Index(fields=['name']),
         ]
 
 class Product(models.Model):
