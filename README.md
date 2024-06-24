@@ -112,11 +112,16 @@ Glace is a software designed for pharmacies and chemists to manage their invento
 - Django
 - Django REST framework
 - djangorestframework-simplejwt
-- Shadcn
+- django-oidc-provider
+
 - Next.js
 - Authjs
-- django-oidc-provider
+- Shadcn 
+
 - Neon database
+
+- Vercel
+- Render
 
 ## Contact
 
