@@ -295,9 +295,10 @@ class StoreDetailView(APIView):
                     Image.objects.create(store=store, **image_data)
 
                 # Handle categories and counties separately
+                # Handle categories and counties separately
                 if categories:
                     try:
-                        store.categories.all().delete()
+                        store.categories.clear()  # Disconnect all existing categories
                         for category_data in categories:
                             category = get_object_or_404(Category, id=category_data['id'])
                             store.categories.add(category)
@@ -308,7 +309,7 @@ class StoreDetailView(APIView):
 
                 if counties:
                     try:
-                        store.counties.all().delete()
+                        store.counties.clear()  # Disconnect all existing counties
                         for county_data in counties:
                             county = get_object_or_404(County, id=county_data['id'])
                             store.counties.add(county)
