@@ -44,16 +44,19 @@ class ImageSerializer(serializers.ModelSerializer):
         model = Image
         fields = ['id', 'url']
 
-class ProductSerializer(serializers.ModelSerializer):
-    images = ImageSerializer(many=True, read_only=True)
 
-    class Meta:
-        model = Product
-        fields = ['id', 'store', 'category', 'name', 'price', 'quantity', 'rating', 'description', 'is_archived', 'created_at', 'updated_at', 'images']
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'description', 'created_at', 'updated_at']
+        
+class ProductSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True) 
+    category = CategorySerializer()  
+    class Meta:
+        model = Product
+        fields = ['id', 'store', 'category', 'name', 'price', 'quantity', 'rating', 'description', 'is_archived', 'created_at', 'updated_at', 'images']
+
 
 class CountySerializer(serializers.ModelSerializer):
     class Meta:
