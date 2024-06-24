@@ -112,7 +112,9 @@ def send_email(message, subject, recipient):
     """
     from_email = os.getenv('EMAIL_HOST_USER')
     recipient_list = [recipient]
-
+    
+    email_password = os.getenv('EMAIL_HOST_PASSWORD')
+    logger.error("Deatails Email to %s: %s", recipient_list,from_email, email_password)
     try:
         send_mail(subject, message, from_email, recipient_list)
         logger.info("Email sent successfully to %s", recipient)
