@@ -812,12 +812,13 @@ class OrderView(APIView):
             subject="Order Received!"
             recipient=customer.email
             send_email(message,subject,recipient)
+            
             # Send SMS using vonage, has free tier for live testing purposes
-            # sms_sender = SendSMS()
-            # sms_sender.send_message(order.phone, message)
+            sms_sender = SendSMS()
+            sms_sender.send_message(order.phone, message)
 
             #africa's talking function for sending sms, returns 101 - success
-            response = africastalking_api.send_sms(order.phone, message)
+            # response = africastalking_api.send_sms(order.phone, message)
             
     
             return Response(serializer.data, status=status.HTTP_201_CREATED)
