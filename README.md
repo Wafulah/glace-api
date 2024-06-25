@@ -4,8 +4,8 @@ Glace is a software designed for pharmacies and chemists to manage their invento
 
 ## Prerequisites
 
--python (version 3.12)
--Nextjs (version 14)
+- python (version 3.12)
+- Nextjs (version 14)
 
 ## Installation
 
@@ -18,7 +18,7 @@ Glace is a software designed for pharmacies and chemists to manage their invento
 
 - To start Glace, run `npm run dev` for the frontend.
 - Run `python manage.py runserver` for the backend.
-- Or access the application through your web browser at https://glace-store.vercel.app.
+- Or access the application through your web browser at [https://glace-store.vercel.app](https://glace-store.vercel.app).
 
 ## Initial Setup
 
@@ -55,7 +55,7 @@ Glace is a software designed for pharmacies and chemists to manage their invento
 #### Notifications and Order Integrity
 
 - A text message and email will be sent after order creation to the user.
-- For integrity, only "Is Delivered," "Is Paid," and "Delivery Date" can be altered on the order detail page.
+- For integrity, only "Is Delivered," "Is Paid," and "Delivery Date" can be altered on the order detail page.   
 
 ## Features
 
@@ -68,25 +68,25 @@ Glace is a software designed for pharmacies and chemists to manage their invento
 
 ### Backend Configuration
 
-- This application uses django-oidc-provider as an OpenID Connect provider for authentication.
+- This application uses `django-oidc-provider` as an OpenID Connect provider for authentication.
 - Google Sign-In is integrated with django-oidc-provider to authenticate users.
 - This application uses `neon` as its PostgreSQL database.
 
 ### Frontend Configuration
 
 - The frontend of this application utilizes authjs for robust double authentication.
-- During authentication, details retrieved from Google via django-oidc-provider are used as credentials to sign in the user on the frontend.
+- During authentication, details retrieved from `Google` via `django-oidc-provider` are used as credentials to sign in the user on the frontend.
 
 ### Communication Between Backend and Frontend
 
-- The backend (django-oidc-provider) provides user information and a session token upon successful authentication.
+- The backend (`django-oidc-provider`) provides user information and a session token upon successful authentication.
 - This token is used to keep user logged in through sessions.
-- Simple_jwt provides a JWT token whenever get-user-by-id is queried.
-- This JWT token is used by the frontend (Next.js) to authorize API access.
+- `Simple_jwt` provides a JWT token whenever get-user-by-id is queried.
+- This JWT token is used by the frontend (`Next.js`) to authorize API access.
 
 ### Token Management and Session Handling
 
-- Next.js (using authjs) regularly queries an endpoint to ensure the JWT token is up-to-date and hasn't expired.
+- Next.js (using `authjs`) regularly queries an endpoint to ensure the JWT token is up-to-date and hasn't expired.
 - Sessions are used to keep the user logged in, ensuring a seamless user experience.
 
 ## Additional Information
