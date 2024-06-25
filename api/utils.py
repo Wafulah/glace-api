@@ -61,15 +61,16 @@ def create_or_update_user(user_info):
             'username': sub,
         }
     )
-
-    subject = "Welcome to Glace"
-    message = (
-        f"Dear {first_name} {last_name},\n"
-        f"We are thrilled to welcome you as part of our community here at Glace!\n"
-        f"Your username is: {sub}\n"
-        f"Glace, your Health care partner!"
-    )
-    send_email(message, subject, email)
+  
+    if created:
+        subject = "Welcome to Glace"
+        message = (
+            f"Dear {first_name} {last_name},\n"
+            f"We are thrilled to welcome you as part of our community here at Glace!\n"
+            f"Your username is: {sub}\n"
+            f"Glace, your Health care partner!"
+        )
+        send_email(message, subject, email)
     return user
 
 class SendSMS:
