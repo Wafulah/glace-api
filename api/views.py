@@ -22,7 +22,7 @@ import json
 import logging
 import urllib.parse
 
-from . import africastalking_api
+from .orders import africastalking_api
 from .utils import create_or_update_user, SendSMS, get_product_details, send_email
 from .models import Store, Image, County, Product, Category, Order, OrderItem, Customer
 from .serializers import (
