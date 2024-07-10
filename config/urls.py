@@ -16,7 +16,7 @@ urlpatterns = [
     path('api/', include('api.customers.urls')),
     path('api/', include('api.products.urls')),
     path('api/', include('api.orders.urls')),
-    path('api/', include('api.store.urls')),
+    path('api/', include('api.stores.urls')),
 ]
 
 LOGIN_URL = '/oidc/authorize/' 
